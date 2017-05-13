@@ -22,10 +22,19 @@ allprojects{
 
 project(':clist-domain'){}
 
+project(':clist-repository'){
+	
+	dependencies{
+		compile project(':clist-domain')
+	}	
+
+}
+
 project(':clist-mongo-infrastructure'){
 
 	dependencies{
 		compile project(':clist-domain')
+		compile project(':clist-repository')
 	}
 }
 
@@ -46,6 +55,7 @@ project(':clist-front'){
 	dependencies{
 		compile project(':clist-service')
 		compile project(':clist-domain')
+		compile project(':clist-repository')
 		runtime project(':clist-service-impl')
 		runtime project(':clist-mongo-infrastructure')
 	}

@@ -1,1 +1,1 @@
-include 'clist-domain','clist-mongo-infrastructure','clist-service','clist-service-impl','clist-front'
+include 'clist-domain','clist-mongo-infrastructure','clist-service','clist-service-impl','clist-front','clist-repository'
