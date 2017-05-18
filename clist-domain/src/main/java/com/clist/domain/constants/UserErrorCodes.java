@@ -7,7 +7,9 @@ package com.clist.domain.constants;
  */
 public class UserErrorCodes {
 
-	public static final Integer USER_NOT_INSERTED = 101;
+	public static final Integer NOT_INSERTED = 101;
 	
-	public static final Integer USER_NOT_FOUND = 102;
+	public static final Integer NOT_FOUND = 102;
+	
+	public static final Integer EXCEPTION_WHILE_DELETING = 103;
 }

@@ -1,16 +1,22 @@
 package com.clist.domain.entities;
 
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.clist.domain.enums.ListType;
 
+@Document
 public class ListHeader {
 
 	@Id
 	private String id;
+	
+	private String template;
+	
+	private Set<String> tags;
 	
 	private ListType type;
 	
@@ -18,11 +24,11 @@ public class ListHeader {
 	private User admin;
 	
 	@DBRef
-	private List<User> usersAllowed;
+	private Set<User> usersAllowed;
 	
-	private List<Column> mainColumns;
+	private Set<Column> mainColumns;
 	
-	private List<Column> detailColumns;
+	private Set<Column> detailColumns;
 
 	public String getId() {
 		return id;
@@ -48,29 +54,46 @@ public class ListHeader {
 		this.admin = admin;
 	}
 
-	public List<User> getUsersAllowed() {
+	public String getTemplate() {
+		return template;
+	}
+
+	public void setTemplate(String template) {
+		this.template = template;
+	}
+
+	public Set<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(Set<String> tags) {
+		this.tags = tags;
+	}
+
+	public Set<User> getUsersAllowed() {
 		return usersAllowed;
 	}
 
-	public void setUsersAllowed(List<User> usersAllowed) {
+	public void setUsersAllowed(Set<User> usersAllowed) {
 		this.usersAllowed = usersAllowed;
 	}
 
-	public List<Column> getMainColumns() {
+	public Set<Column> getMainColumns() {
 		return mainColumns;
 	}
 
-	public void setMainColumns(List<Column> mainColumns) {
+	public void setMainColumns(Set<Column> mainColumns) {
 		this.mainColumns = mainColumns;
 	}
 
-	public List<Column> getDetailColumns() {
+	public Set<Column> getDetailColumns() {
 		return detailColumns;
 	}
 
-	public void setDetailColumns(List<Column> detailColumns) {
+	public void setDetailColumns(Set<Column> detailColumns) {
 		this.detailColumns = detailColumns;
 	}
+	
 	
 	
 	

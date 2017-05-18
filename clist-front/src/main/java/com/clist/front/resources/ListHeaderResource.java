@@ -1,156 +1,102 @@
 package com.clist.front.resources;
 
-import java.util.ArrayList;
-import java.util.List;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.hateoas.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.clist.domain.entities.Column;
+import com.clist.domain.constants.ListHeaderErrorCodes;
+import com.clist.domain.constants.ListHeaderMessages;
 import com.clist.domain.entities.ListHeader;
-import com.clist.domain.entities.User;
-import com.clist.domain.enums.ListType;
-import com.clist.domain.enums.Visibility;
+import com.clist.domain.exceptions.CListDataNotFoundException;
+import com.clist.domain.exceptions.CListException;
+import com.clist.domain.vo.DMLResult;
 import com.clist.repositories.ListHeaderRepository;
 
 @RestController
-@RequestMapping("/listheader")
+@RequestMapping("/listheaders")
 public class ListHeaderResource {
 	
 	
 	@Autowired
+	private MessageSource messageSource;
+	
 	private ListHeaderRepository repo;
 	
-	@RequestMapping(value="/save", method=RequestMethod.GET)
-	public String storeListHeader(){
-		ListHeader hi = new ListHeader();
+	
+	@RequestMapping( method=RequestMethod.POST, consumes="application/json", produces="application/json")
+	public ResponseEntity<Resource<ListHeader>> saveListHeader(@RequestBody ListHeader header) throws CListException{
 		
-		User admin = new User();
-		admin.setName("Diogo Favero Fabrile");
-		admin.setId("diogof.fabrile@gmail.com");
-
-		User nara = new User();
-		nara.setName("Nara volponi Lopes");
-		nara.setId("nara.lopes@gmail.com");
+		ListHeader insertedHeader = null;
+		try{
+			insertedHeader = repo.insert(header);
+		}catch(Exception e){
+			throw new CListException(ListHeaderErrorCodes.NOT_INSERTED, messageSource.getMessage(ListHeaderMessages.NOT_SAVED_EXCEPTION, null,null)+ ":" + e.getMessage());
+		}
 		
+		if(insertedHeader == null){
+			throw new CListException(ListHeaderErrorCodes.NOT_INSERTED, messageSource.getMessage(ListHeaderMessages.NOT_SAVED, null,null));
+		}
 		
-		
-		Column columna = new Column();
-		columna.setDescription("Empresa");
-		columna.setPosition("A");
-		columna.setSize(40L);
-		columna.setVisibleTo(Visibility.ALL);
-
-		Column columnb = new Column();
-		columnb.setDescription("Cidade");
-		columnb.setPosition("B");
-		columnb.setSize(20L);
-		columnb.setVisibleTo(Visibility.ALL);
-		
-		
-		Column columnc = new Column();
-		columnc.setDescription("Salario");
-		columnc.setPosition("C");
-		columnc.setSize(10L);
-		columnc.setVisibleTo(Visibility.ALL);
-		
-		Column columnd = new Column();
-		columnd.setDescription("Details");
-		columnd.setPosition("D");
-		columnd.setSize(100L);
-		columnd.setVisibleTo(Visibility.ALL);
-		
-		List<Column> mainColumns = new ArrayList<Column>();
-		mainColumns.add(columna);
-		mainColumns.add(columnb);
-		mainColumns.add(columnc);
-		
-		List<Column> detailColumns = new ArrayList<Column>();
-		detailColumns.add(columnd);
-		
-		List<User> usersAllowed = new ArrayList<User>();
-		usersAllowed.add(nara);
-		
-
-		hi.setUsersAllowed(usersAllowed);
-		hi.setMainColumns(mainColumns);
-		hi.setDetailColumns(detailColumns);
-		
-
-
-		hi.setId("diogofabrile");
-		hi.setAdmin(admin);
-		hi.setType(ListType.COLABORATIVE);
-		
-		repo.insert(hi);
-		return "Saved";
+		return new ResponseEntity<Resource<ListHeader>>(getListHeaderResource(insertedHeader),HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/sample", method=RequestMethod.GET)
-	public ListHeader searchListHeader(){
-		ListHeader hi = new ListHeader();
+	
+	@RequestMapping(value="/{listHeaderId}", method=RequestMethod.GET, consumes="application/json", produces="application/json" )
+	public ResponseEntity<Resource<ListHeader>> findById(@PathVariable("listHeaderId") String id ) throws CListDataNotFoundException{
 		
-		User admin = new User();
-		admin.setName("Diogo Favero Fabrile");
-		admin.setId("diogof.fabrile@gmail.com");
-
-		User nara = new User();
-		nara.setName("Nara volponi Lopes");
-		nara.setId("nara.lopes@gmail.com");
+		ListHeader returnedHeader = repo.findOne(id);
 		
+		if(returnedHeader == null){
+			throw new CListDataNotFoundException(ListHeaderErrorCodes.NOT_FOUND, messageSource.getMessage(ListHeaderMessages.NOT_FOUND, null,null));
+		}
 		
-		
-		Column columna = new Column();
-		columna.setDescription("Empresa");
-		columna.setPosition("A");
-		columna.setSize(40L);
-		columna.setVisibleTo(Visibility.ALL);
-
-		Column columnb = new Column();
-		columnb.setDescription("Cidade");
-		columnb.setPosition("B");
-		columnb.setSize(20L);
-		columnb.setVisibleTo(Visibility.ALL);
-		
-		
-		Column columnc = new Column();
-		columnc.setDescription("Salario");
-		columnc.setPosition("C");
-		columnc.setSize(10L);
-		columnc.setVisibleTo(Visibility.ALL);
-		
-		Column columnd = new Column();
-		columnd.setDescription("Details");
-		columnd.setPosition("D");
-		columnd.setSize(100L);
-		columnd.setVisibleTo(Visibility.ALL);
-		
-		List<Column> mainColumns = new ArrayList<Column>();
-		mainColumns.add(columna);
-		mainColumns.add(columnb);
-		mainColumns.add(columnc);
-		
-		List<Column> detailColumns = new ArrayList<Column>();
-		detailColumns.add(columnd);
-		
-		List<User> usersAllowed = new ArrayList<User>();
-		usersAllowed.add(nara);
-		
-
-		hi.setUsersAllowed(usersAllowed);
-		hi.setMainColumns(mainColumns);
-		hi.setDetailColumns(detailColumns);
-		
-
-
-		hi.setId("diogofabrile");
-		hi.setAdmin(admin);
-		hi.setType(ListType.COLABORATIVE);
-		
-		return hi;
+		return new ResponseEntity<Resource<ListHeader>>(getListHeaderResource(returnedHeader),HttpStatus.OK);
 	}
 	
+	
+	@RequestMapping(value="/{listHeaderId}",method=RequestMethod.DELETE ,consumes="application/json", produces="application/json")
+	public ResponseEntity<DMLResult> deleteById(@PathVariable("listHeaderId") String id ) throws CListException{
+
+		DMLResult result = new DMLResult();
+		
+		try{
+			Long count = repo.deleteById(id);
+			result.setCount(count);
+			result.setMessage(messageSource.getMessage(ListHeaderMessages.SUCCESSFULLY_DELETED, null,null));
+		}catch(Exception ex){
+			throw new CListException(ListHeaderErrorCodes.EXCEPTION_WHILE_DELETING ,messageSource.getMessage(ListHeaderMessages.NOT_DELETED_EXCEPTION,  null, null) + ":" + ex.getMessage());
+		}
+	    
+		if(result.getCount() == null){
+			throw new CListDataNotFoundException(ListHeaderErrorCodes.NOT_FOUND, messageSource.getMessage(ListHeaderMessages.NOT_DELETED, null,null));
+		}
+		
+		return new ResponseEntity<DMLResult>(result,HttpStatus.OK);
+	}
+	
+	
+	private Resource<ListHeader> getListHeaderResource(ListHeader listHeader) throws CListDataNotFoundException{
+		Resource<ListHeader> resource = new Resource<>(listHeader);
+		
+		resource.add(linkTo(methodOn(ListHeaderResource.class).findById(listHeader.getId())).withSelfRel());
+		
+		return resource;
+	}
+	
+	@Autowired
+	public void setListHeaderRepository(ListHeaderRepository repo){
+		this.repo = repo;
+	}
 	
 }

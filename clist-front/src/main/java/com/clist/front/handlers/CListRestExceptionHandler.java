@@ -2,8 +2,10 @@ package com.clist.front.handlers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -32,4 +34,5 @@ public class CListRestExceptionHandler extends ResponseEntityExceptionHandler{
 		return new ResponseEntity<ErrorMessage>(new ErrorMessage(DefaultErrorCodes.DEFAULT_RUNTIME_EXCEPTION, ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 	
 	}
+	
 }
