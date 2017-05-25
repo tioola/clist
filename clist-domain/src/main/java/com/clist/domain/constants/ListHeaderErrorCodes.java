@@ -14,5 +14,5 @@ public class ListHeaderErrorCodes {
 	
 	public static final Integer EXCEPTION_WHILE_DELETING = 203;
 
-	
+	public static final Integer EXCEPTION_WHILE_UPDATING = 204;
 }

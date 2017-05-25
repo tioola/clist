@@ -93,6 +93,13 @@ public class ListHeader {
 	public void setDetailColumns(Set<Column> detailColumns) {
 		this.detailColumns = detailColumns;
 	}
+
+	@Override
+	public String toString() {
+		return " {\"id\":\"" + id + "\",\"template\":\"" + template + "\",\"tags\":\"" + tags + "\",\"type\":\"" + type
+				+ "\",\"admin\":\"" + admin + "\",\"usersAllowed\":\"" + usersAllowed + "\",\"mainColumns\":\""
+				+ mainColumns + "\",\"detailColumns\":\"" + detailColumns + "\"}";
+	}
 	
 	
 	

@@ -14,5 +14,9 @@ public class ListHeaderMessages {
 		
 	public static final String SUCCESSFULLY_DELETED = "listheader.success.deleted";
 	
+	public static final String NOT_UPDATED = "listheader.error.notupdated";
+	
+	public static final String NOT_UPDATED_EXCEPTION = "listheader.error.notupdated.exception";
+	
 	
 }

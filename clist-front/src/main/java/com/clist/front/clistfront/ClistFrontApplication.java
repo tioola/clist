@@ -9,7 +9,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories(basePackages={"com.clist.repositories.mongo.infra"})
 @ComponentScan(basePackages={"com.clist.front.resources",
 							 "com.clist.front.security",
-							 "com.clist.front.handlers"})
+							 "com.clist.front.handlers",
+							 "com.clist.service.impl"})
 public class ClistFrontApplication {
 
 	public static void main(String[] args) {

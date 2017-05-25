@@ -21,46 +21,36 @@ import com.clist.domain.exceptions.CListDataNotFoundException;
 import com.clist.domain.exceptions.CListException;
 import com.clist.domain.vo.DMLResult;
 import com.clist.repositories.UserRepository;
+import com.clist.service.UserService;
 
 
 @RequestMapping("/users")
 @RestController
 public class UserResource {
-
-	@Autowired
-	private MessageSource messageSource;
 	
-	private UserRepository userRepository;
-	
-	
+	private UserService userService;
 	
 	@RequestMapping(method=RequestMethod.POST, consumes="application/json", produces="application/json")
 	public ResponseEntity<User> saveUser(@RequestBody User user) throws CListException{
 		
-		User userSaved =null;
-		
-		try{
-			userSaved = userRepository.insert(user);
-		}catch(Exception ex){
-			throw new CListException(UserErrorCodes.NOT_INSERTED, messageSource.getMessage(UserMessages.NOT_SAVED_EXCEPTION,null,null) + ex.getMessage());
-		}
-		
-		if(userSaved == null){
-			throw new CListException(UserErrorCodes.NOT_INSERTED, messageSource.getMessage(UserMessages.NOT_SAVED,null,null));
-		}
-		
+		User userSaved = userService.insertUser(user);
+			
 		return new ResponseEntity<User>( userSaved,HttpStatus.CREATED);
 	}
-
+	
+	
+	@RequestMapping(method=RequestMethod.PUT, consumes="application/json", produces="application/json")
+	public ResponseEntity<Resource<User>> updateUser(@RequestBody User user) throws CListException {
+		
+		User userUpdated = userService.updateUser(user);
+		
+		return new ResponseEntity<Resource<User>>(getUserResource(userUpdated), HttpStatus.OK);
+	}
 	
 	@RequestMapping(value="/{userId}",method=RequestMethod.GET, consumes="application/json", produces="application/json")
 	public ResponseEntity<Resource<User>> findById(@PathVariable("userId") String userId) throws CListException{
 		
-		User userReturned = userRepository.findOne(userId);
-		
-		if(userReturned == null){
-			throw new CListDataNotFoundException(UserErrorCodes.NOT_FOUND, messageSource.getMessage(UserMessages.NOT_FOUND,null,null));
-		}
+		User userReturned = userService.findUser(userId);
 		
 		return new ResponseEntity<Resource<User>>(getUserResource(userReturned), HttpStatus.OK);
 	}
@@ -69,22 +59,8 @@ public class UserResource {
 	@RequestMapping(value="/{userId}", method=RequestMethod.DELETE, consumes="application/json", produces="application/json")
 	public ResponseEntity<DMLResult> deleteById(@PathVariable("userId") String id) throws CListException{
 		
-		DMLResult result = new DMLResult();
-		try{
-			
-			Long count = userRepository.deleteById(id);
-			
-			result.setCount(count);
-			result.setMessage(messageSource.getMessage(UserMessages.SUCCESSFULLY_DELETED, null,null));
-			
-		}catch(Exception ex){
-			throw new CListException(UserErrorCodes.EXCEPTION_WHILE_DELETING, messageSource.getMessage(UserMessages.NOT_DELETED_EXCEPTION,null,null));
-		}
-		
-		if(result.getCount() == 0){
-			throw new CListDataNotFoundException(UserErrorCodes.NOT_FOUND, messageSource.getMessage(UserMessages.NOT_DELETED,null,null));
-		}
-		
+		DMLResult result = userService.deleteUser(id);
+	
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -97,9 +73,8 @@ public class UserResource {
 		
 	}
 	
-
 	@Autowired
-	public void setUserRepository(UserRepository userRepository){
-		this.userRepository = userRepository;
+	public void setUserService(UserService userService){
+		this.userService = userService;
 	}
 }

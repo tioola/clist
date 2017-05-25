@@ -1,4 +1,4 @@
-
+ 
 allprojects{
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
@@ -48,6 +48,7 @@ project(':clist-service'){
 project(':clist-service-impl'){
 	dependencies{
 		compile project(':clist-service')
+		compile project(':clist-repository')
 	}
 }
 
